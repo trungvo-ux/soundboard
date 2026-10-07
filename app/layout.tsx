@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   title: "Trung Vo's Portfolio",
   description:
     "Product designer who ships — a decade of interfaces, told in the order they were built.",
+  // Opt out of AI training where tools honour it (noai/noimageai), and state ownership.
+  robots: { index: true, follow: true, "max-image-preview": "large" },
+  other: { robots: "noai, noimageai", copyright: `© ${new Date().getFullYear()} Trung Vo. All rights reserved.` },
 };
 
 export default function RootLayout({
