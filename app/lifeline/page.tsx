@@ -10,6 +10,7 @@ import {
   LifelineStage,
 } from "@/components/lifeline-shell"
 import { ThemeSwitcher } from "@/components/theme-switcher"
+import { TrungLogo } from "@/components/trung-logo"
 import { personalLifeline } from "@/lib/lifeline-personal"
 import type { Metadata } from "next"
 
@@ -21,13 +22,14 @@ export const metadata: Metadata = { title: "Lifeline — Trung Vo" }
  * The nav is not decoration — the rail measures its start and end from
  * it, which is what keeps the timeline inset from the viewport instead
  * of running edge to edge. See components/lifeline-shell.tsx.
- *
- * Swap `personalLifeline` for your own data and replace the logo.
  */
 export default function LifelinePage() {
   return (
     <LifelineShell>
-      <LifelineNav logo={<span className="text-sm font-medium">Lifeline</span>}>
+      <LifelineNav
+        logo={<TrungLogo className="h-6 w-auto" priority />}
+        logoLabel="Trung — home"
+      >
         <ThemeSwitcher />
       </LifelineNav>
 
