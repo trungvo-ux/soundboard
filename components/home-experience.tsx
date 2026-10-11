@@ -6,13 +6,22 @@ import { Soundboard } from "@/components/soundboard"
 import { PortfolioNav } from "@/components/portfolio-nav"
 import "./home-experience.css"
 
-// Update this timestamp when the status changes; elapsed time keeps running across visits.
-const lastSeenAt = "2026-10-11T07:08:50Z"
+// Update these when the status changes; elapsed time keeps running across visits.
+const lastSeen = {
+  city: "San Jose",
+  activity: "at a shooting range",
+  at: "2026-10-11T19:30:40Z",
+}
 
 function timeSinceLastSeen(now: number) {
-  const hours = Math.max(0, (now - Date.parse(lastSeenAt)) / 3_600_000)
+  const minutes = Math.max(0, (now - Date.parse(lastSeen.at)) / 60_000)
+  if (minutes < 60) {
+    const wholeMinutes = Math.max(1, Math.floor(minutes))
+    return `${wholeMinutes} ${wholeMinutes === 1 ? "minute" : "minutes"} ago`
+  }
+  const hours = minutes / 60
   if (hours < 24) {
-    const wholeHours = Math.max(1, Math.floor(hours))
+    const wholeHours = Math.floor(hours)
     return `${wholeHours} ${wholeHours === 1 ? "hour" : "hours"} ago`
   }
   if (hours < 48) return "yesterday"
@@ -64,7 +73,7 @@ export function HomeExperience() {
           </div>
           <div className={`home-hero-copy t-stagger ${shown ? "is-shown" : ""}`}>
             <h1 className="t-stagger-line t-stagger-line--1">Trung is a Product Designer at <a href="https://www.ibm.com/" target="_blank" rel="noopener noreferrer">IBM</a></h1>
-            <p className="home-last-seen t-stagger-line t-stagger-line--2">Last seen in San Jose, <time dateTime={lastSeenAt} suppressHydrationWarning>{timeSinceLastSeen(now)}</time> playing poker.</p>
+            <p className="home-last-seen t-stagger-line t-stagger-line--2">Last seen <time dateTime={lastSeen.at} suppressHydrationWarning>{timeSinceLastSeen(now)}</time> {lastSeen.activity} in {lastSeen.city}</p>
             <nav className="home-social-links t-stagger-line t-stagger-line--3" aria-label="Social links">
               <a href="https://www.linkedin.com/in/trung--vo" target="_blank" rel="noopener noreferrer">LinkedIn</a>
               <span className="home-social-dot" aria-hidden="true" />
