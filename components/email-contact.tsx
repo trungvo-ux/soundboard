@@ -1,38 +1,61 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import localFont from "next/font/local"
 import "./email-contact.css"
 
-export function EmailContact() {
-  const [subject, setSubject] = useState("")
-  const [body, setBody] = useState("")
-  const [error, setError] = useState("")
-  const [sending, setSending] = useState(false)
+const garamond = localFont({ src: "../public/fonts/EBGaramond-VariableFont_wght.ttf", weight: "400", variable: "--font-card" })
 
-  async function send(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setError("")
-    setSending(true)
-    try {
-      const response = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject, body }) })
-      if (!response.ok) throw new Error("Contact is unavailable right now.")
-      const data = await response.json() as { href?: string }
-      if (!data.href?.startsWith("mailto:")) throw new Error("Contact is unavailable right now.")
-      window.location.href = data.href
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Contact is unavailable right now.")
-    } finally {
-      setSending(false)
-    }
+export function EmailContact() {
+  const [revealed, setRevealed] = useState(false)
+  const hold = useRef<number | null>(null)
+  const hide = useRef<number | null>(null)
+
+  useEffect(() => () => {
+    if (hold.current !== null) window.clearTimeout(hold.current)
+    if (hide.current !== null) window.clearTimeout(hide.current)
+  }, [])
+
+  function clearHold() {
+    if (hold.current !== null) window.clearTimeout(hold.current)
+    hold.current = null
   }
 
-  return <main id="main-content" tabIndex={-1} className="email-page">
-    <h1>Get in touch</h1>
-    <form onSubmit={send}>
-      <label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} maxLength={120} required /></label>
-      <label>Message<textarea value={body} onChange={(event) => setBody(event.target.value)} maxLength={5000} rows={6} required /></label>
-      <button type="submit" disabled={sending}>Compose email</button>
-      {error ? <p role="alert">{error}</p> : null}
-    </form>
+  return <main id="main-content" tabIndex={-1} className={`email-page ${garamond.variable}`}>
+    <div className="email-card-stage" data-revealed={revealed}>
+      <article className="email-card" aria-label="Trung Vo's business card"
+        onPointerDown={(event) => {
+          if (event.pointerType === "mouse") return
+          if (hide.current !== null) window.clearTimeout(hide.current)
+          clearHold()
+          hold.current = window.setTimeout(() => setRevealed(true), 500)
+        }}
+        onPointerUp={(event) => {
+          if (event.pointerType === "mouse") return
+          clearHold()
+          hide.current = window.setTimeout(() => setRevealed(false), 1400)
+        }}
+        onPointerCancel={() => { clearHold(); setRevealed(false) }}
+        onPointerLeave={(event) => { if (event.pointerType !== "mouse") clearHold() }}
+      >
+        <div className="email-card-top">
+          <div className="email-card-contact">
+            <a href="https://cal.com/trung-vo-dgkllv/15min">Book a call</a>
+            <a href="mailto:hello@trung.xyz">hello@trung.xyz</a>
+          </div>
+          <div className="email-card-work">
+            <span>International Business Machines</span>
+            <span>Design Engineer</span>
+          </div>
+        </div>
+        <div className="email-card-identity">
+          <h1>Trung VO</h1>
+          <p>Product Designer</p>
+        </div>
+        <p className="email-card-footer">Open to contract and full-time roles in SF or SJ, CA, USA</p>
+        <span className="email-card-watermark" aria-hidden="true">TV</span>
+      </article>
+      <p className="email-card-secret" aria-hidden="true">You noticed the watermark.</p>
+    </div>
   </main>
 }

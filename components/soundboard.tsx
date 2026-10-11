@@ -38,6 +38,7 @@ export function Soundboard({ enabled = true }: { enabled?: boolean }) {
   const [ready, setReady] = useState(false)
   const [looping, setLooping] = useState(false)
   const [tapeTime, setTapeTime] = useState(0)
+  const [tapeDuration, setTapeDuration] = useState(217)
 
   useEffect(() => {
     const context = new AudioContext()
@@ -47,6 +48,11 @@ export function Soundboard({ enabled = true }: { enabled?: boolean }) {
     instrumental.volume = 0
     instrumental.preload = "auto"
     beat.current = instrumental
+    const updateDuration = () => {
+      if (Number.isFinite(instrumental.duration) && instrumental.duration > 0) setTapeDuration(instrumental.duration)
+    }
+    instrumental.addEventListener("loadedmetadata", updateDuration)
+    if (instrumental.readyState >= 1) updateDuration()
     const meter = context.createAnalyser()
     meter.fftSize = 512
     context.createMediaElementSource(instrumental).connect(meter)
@@ -67,6 +73,7 @@ export function Soundboard({ enabled = true }: { enabled?: boolean }) {
     return () => {
       mounted = false
       instrumental.pause()
+      instrumental.removeEventListener("loadedmetadata", updateDuration)
       window.clearInterval(clock)
       for (const timer of activeTimers.values()) window.clearTimeout(timer)
       activeTimers.clear()
@@ -147,10 +154,18 @@ export function Soundboard({ enabled = true }: { enabled?: boolean }) {
   const lyricCue = lyricCues.find(([start, end]) => lyricTime >= start && lyricTime < end)
   const lyric = lyricCue ? pads[lyricCue[2]].label : ""
   const secondsToFirstLyric = lyricCues[0][0] - lyricTime
-  const introCountdown = secondsToFirstLyric > 0 && secondsToFirstLyric <= 3 ? Math.ceil(secondsToFirstLyric) : null
+  const introCountdown = secondsToFirstLyric > 0 && secondsToFirstLyric <= 5 ? Math.ceil(secondsToFirstLyric) : null
   const upcomingCue = lyricCues.find(([start]) => start > (lyricCue ? lyricCue[0] : lyricTime))
   const upcomingLyric = upcomingCue ? pads[upcomingCue[2]].label : ""
-  const lyricProgress = lyricCue ? Math.floor(((lyricTime - lyricCue[0]) / (lyricCue[1] - lyricCue[0])) * 100) : 0
+  const lyricProgress = lyricCue ? Math.min(100, Math.max(0, ((lyricTime - lyricCue[0]) / (lyricCue[1] - lyricCue[0])) * 100)) : 0
+  const scrubProgress = Math.min(100, (tapeTime / tapeDuration) * 100)
+  function seek(nextTime: number) {
+    const instrumental = beat.current
+    if (!instrumental) return
+    const time = Math.max(0, Math.min(nextTime, tapeDuration))
+    instrumental.currentTime = time
+    setTapeTime(time)
+  }
 
   return (
     <section data-soundboard className="soundboard-wrap" aria-label="Harder Better Faster Stronger soundboard">
@@ -172,16 +187,20 @@ export function Soundboard({ enabled = true }: { enabled?: boolean }) {
             <span className="soundboard-grille" />
           </div>
           <div className={`soundboard-display ${looping ? "is-playing" : ""}`} aria-label={`Tape ${timecode}. ${introCountdown !== null ? `Vocals in ${introCountdown}` : lyric ? `Now: ${lyric}` : "Instrumental"}. ${upcomingLyric ? `Up next: ${upcomingLyric}` : ""}`}>
-            <div className="soundboard-tape-window" aria-hidden="true">
-              <span className="soundboard-tape-time">{timecode}</span>
-              <span className="soundboard-tape-reel soundboard-tape-reel-left"><i /></span>
-              <span className="soundboard-tape-reel soundboard-tape-reel-right"><i /></span>
-              <span className="soundboard-tape-level" />
-            </div>
-            <div className="soundboard-tape-lyrics">
-              <span key={(introCountdown ?? lyric) || "idle"} className={`soundboard-tape-lyric ${introCountdown !== null ? "is-countdown" : ""}`} style={{ backgroundImage: `linear-gradient(90deg, #83cf8a ${introCountdown !== null ? 100 : lyricProgress}%, #f0f0f0 ${introCountdown !== null ? 100 : lyricProgress}%)` }}>{lyric || (introCountdown !== null ? introCountdown : "♪")}</span>
+            <div className="soundboard-tape-lyrics" aria-hidden="true">
+              <span key={(introCountdown ?? lyric) || "idle"} className={`soundboard-tape-lyric ${lyric ? "is-karaoke" : introCountdown !== null ? "is-countdown" : ""}`} style={lyric ? { backgroundImage: `linear-gradient(90deg, #ededed ${lyricProgress}%, #727272 ${lyricProgress}%)` } : undefined}>{lyric || (introCountdown !== null ? introCountdown : "♪")}</span>
               <span className="soundboard-tape-upcoming">{upcomingLyric}</span>
             </div>
+            <div className="soundboard-tape-reels" aria-hidden="true">
+              <span className="soundboard-tape-reel soundboard-tape-reel-left"><i /></span>
+              <span className="soundboard-tape-reel soundboard-tape-reel-right"><i /></span>
+              <span className="soundboard-tape-time">{timecode}</span>
+            </div>
+            <div className="soundboard-tape-track" aria-hidden="true">
+              <span className="soundboard-tape-ticks">{Array.from({ length: 13 }, (_, index) => <i key={index} />)}</span>
+              <span className="soundboard-tape-progress" style={{ width: `${scrubProgress}%` }} />
+            </div>
+            <input className="soundboard-tape-scrubber" type="range" min="0" max={tapeDuration} step="0.1" value={tapeTime} onChange={(event) => seek(Number(event.target.value))} aria-label="Scrub instrumental" aria-valuetext={timecode} />
           </div>
           <button type="button" role="switch" className="soundboard-loop" disabled={!ready || !enabled} aria-label="Music, keyboard Space" aria-checked={looping} onPointerDown={() => play(16)} onClick={(event) => { if (event.detail === 0) play(16) }}>
             <span className="soundboard-loop-cap" aria-hidden="true"><span className="soundboard-loop-led" /></span>

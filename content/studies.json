@@ -28,7 +28,7 @@
           "type": "image",
           "wide": true,
           "columns": 1,
-          "src": "/uploads/thumbnail-msjndzx6.png"
+          "src": "/uploads/frame-85-muxnpb9c.jpg"
         },
         {
           "id": "n4",
@@ -42,7 +42,7 @@
           "type": "image",
           "wide": true,
           "columns": 1,
-          "src": "/uploads/left-msjntm1i.png",
+          "src": "/uploads/frame-87-muxnpf6f.jpg",
           "srcB": "/uploads/right-msjntnx2.png"
         },
         {
@@ -57,7 +57,7 @@
           "type": "image",
           "wide": true,
           "columns": 1,
-          "src": "/uploads/backtoback-msjo2rxc.png"
+          "src": "/uploads/frame-86-muxnpmky.jpg"
         },
         {
           "id": "n11",
@@ -71,7 +71,7 @@
           "type": "image",
           "wide": true,
           "columns": 1,
-          "src": "/uploads/ai-msjo4j6w.png"
+          "src": "/uploads/frame-88-muxnpqsf.jpg"
         },
         {
           "id": "n10",
@@ -248,7 +248,7 @@
       "slug": "portfolio",
       "product": "Portfolio",
       "year": "2026",
-      "status": "Computer",
+      "status": "Personal",
       "statusColor": "#0072f5",
       "role": "Design Engineer",
       "url": "https://trung-os-no-cover.vercel.app/",
@@ -260,6 +260,13 @@
           "wide": false,
           "columns": 1,
           "src": "/uploads/computer-muwa02e7.png"
+        },
+        {
+          "id": "n2",
+          "type": "text",
+          "title": "Portfolio",
+          "copy": "This was my first time using AI to create my portfolio using Three.JS, feel free to check it out!",
+          "muted": false
         }
       ]
     },
@@ -275,7 +282,8 @@
           "id": "n1",
           "type": "image",
           "wide": false,
-          "columns": 1
+          "columns": 1,
+          "src": "/uploads/hush-muxnjlwq.jpg"
         },
         {
           "id": "n2",

@@ -16,7 +16,7 @@ const kalam = Kalam({
 });
 
 // viewport-fit=cover makes env(safe-area-inset-*) real, so fixed controls clear the notch and home bar.
-export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#ffffff" }
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", interactiveWidget: "resizes-content", themeColor: "#ffffff" }
 
 export const metadata: Metadata = {
   title: "Trung Vo's Portfolio",

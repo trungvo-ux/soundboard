@@ -21,7 +21,9 @@ function shapeOf(study: Study, index: number) {
   return Math.abs(hash) % 4
 }
 
-export function WorksGallery({ studies }: { studies: Study[] }) {
+export function WorksGallery({ studies: allStudies }: { studies: Study[] }) {
+  // A study without a cover image would be a blank gray card; it stays reachable from its URL.
+  const studies = allStudies.filter((study) => thumbnail(study))
   const router = useRouter()
   const [hovered, setHovered] = useState<Study | null>(null)
   const [captionStudy, setCaptionStudy] = useState<Study | null>(null)
@@ -40,9 +42,58 @@ export function WorksGallery({ studies }: { studies: Study[] }) {
   const navigating = useRef(false)
   const projects = studies.map((study, index) => ({ study, shape: shapeOf(study, index) }))
   // Three studies get a repeat of the first to fill the four-shape rhythm.
-  const sequence = projects.length > 0 && projects.length < 4 ? [...projects, { study: projects[0].study, shape: 3 }] : projects
+  // Under three, the infinite loop would show the same card side by side, so those render as a static row.
+  const loop = projects.length >= 3
+  const sequence = !loop ? [] : projects.length < 4 ? [...projects, { study: projects[0].study, shape: 3 }] : projects
   const cards = Array.from({ length: 5 }, () => sequence).flat()
   const introCount = cards.length
+
+  function changeCaption(next: Study | null) {
+    requestedCaption.current = next
+    if (captionTimer.current !== null) window.clearTimeout(captionTimer.current)
+    if (captionFrame.current !== null) window.cancelAnimationFrame(captionFrame.current)
+    captionTimer.current = null
+    captionFrame.current = null
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      shownCaption.current = next
+      setCaptionStudy(next)
+      setCaptionPhase("")
+      return
+    }
+
+    if (shownCaption.current?.slug === next?.slug) {
+      setCaptionPhase("")
+      return
+    }
+
+    const enter = (study: Study | null) => {
+      shownCaption.current = study
+      setCaptionStudy(study)
+      if (!study) {
+        setCaptionPhase("")
+        return
+      }
+      setCaptionPhase("is-enter-start")
+      captionFrame.current = window.requestAnimationFrame(() => {
+        void caption.current?.offsetHeight
+        setCaptionPhase("")
+        captionFrame.current = null
+      })
+    }
+
+    if (!shownCaption.current) {
+      enter(next)
+      return
+    }
+
+    const duration = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--text-swap-dur")) || 150
+    setCaptionPhase("is-exit")
+    captionTimer.current = window.setTimeout(() => {
+      captionTimer.current = null
+      enter(requestedCaption.current)
+    }, duration)
+  }
 
   useEffect(() => {
     const row = track.current
@@ -117,7 +168,7 @@ export function WorksGallery({ studies }: { studies: Study[] }) {
     let base = edge - row.offsetLeft - elements[center].offsetLeft
     let current = base
     let target = base
-    let previous = performance.now()
+    let previous = 0
     let frame = 0
     row.style.transform = `translate3d(${base}px, 0, 0)`
 
@@ -140,7 +191,7 @@ export function WorksGallery({ studies }: { studies: Study[] }) {
     }
 
     function move(now: number) {
-      const elapsed = Math.min(now - previous, 48)
+      const elapsed = previous ? Math.min(now - previous, 48) : 0
       previous = now
       if (touchOnly) captionCentered(now)
       if (!autoPaused.current && !reducedMotion) target -= cycle * elapsed / 38000
@@ -233,53 +284,6 @@ export function WorksGallery({ studies }: { studies: Study[] }) {
     if (captionFrame.current !== null) window.cancelAnimationFrame(captionFrame.current)
   }, [])
 
-  function changeCaption(next: Study | null) {
-    requestedCaption.current = next
-    if (captionTimer.current !== null) window.clearTimeout(captionTimer.current)
-    if (captionFrame.current !== null) window.cancelAnimationFrame(captionFrame.current)
-    captionTimer.current = null
-    captionFrame.current = null
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      shownCaption.current = next
-      setCaptionStudy(next)
-      setCaptionPhase("")
-      return
-    }
-
-    if (shownCaption.current?.slug === next?.slug) {
-      setCaptionPhase("")
-      return
-    }
-
-    const enter = (study: Study | null) => {
-      shownCaption.current = study
-      setCaptionStudy(study)
-      if (!study) {
-        setCaptionPhase("")
-        return
-      }
-      setCaptionPhase("is-enter-start")
-      captionFrame.current = window.requestAnimationFrame(() => {
-        void caption.current?.offsetHeight
-        setCaptionPhase("")
-        captionFrame.current = null
-      })
-    }
-
-    if (!shownCaption.current) {
-      enter(next)
-      return
-    }
-
-    const duration = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--text-swap-dur")) || 150
-    setCaptionPhase("is-exit")
-    captionTimer.current = window.setTimeout(() => {
-      captionTimer.current = null
-      enter(requestedCaption.current)
-    }, duration)
-  }
-
   function moveCursor(event: PointerEvent<HTMLElement>) {
     if (cursor.current) cursor.current.style.transform = `translate3d(${event.clientX + 16}px, ${event.clientY + 16}px, 0)`
   }
@@ -305,7 +309,7 @@ export function WorksGallery({ studies }: { studies: Study[] }) {
     })
     document.body.appendChild(overlay)
     // Lets the case study hold its header and other cards until the thumbnail has landed.
-    document.documentElement.dataset.studyEntry = "fly"
+    document.documentElement.setAttribute("data-study-entry", "fly")
     setHovered(null)
     router.push(url)
 
@@ -316,7 +320,7 @@ export function WorksGallery({ studies }: { studies: Study[] }) {
       observer.disconnect()
       overlay.remove()
       // Cleared after the entrance has played, so changing the delay never restarts it mid-way.
-      window.setTimeout(() => { delete document.documentElement.dataset.studyEntry }, 1500)
+      window.setTimeout(() => { document.documentElement.removeAttribute("data-study-entry") }, 1500)
     }
     const observer = new MutationObserver(() => {
       // Desktop and phone layouts each render a cover; fly to whichever one is actually laid out.
@@ -343,7 +347,13 @@ export function WorksGallery({ studies }: { studies: Study[] }) {
     <PortfolioNav active="works" />
     <main id="main-content" tabIndex={-1} className="works-main">
       <h1 className="sr-only">Selected work</h1>
-      <div className="works-viewport" onPointerMove={moveCursor} onPointerLeave={() => { setHovered(null); changeCaption(null); setPointerHover(false); autoPaused.current = false }}>
+      {projects.length === 0 ? <p className="works-empty">Case studies are on their way. <Link href="/email">Email me</Link> in the meantime.</p> : null}
+      {projects.length > 0 && !loop ? <div className="works-static">
+        {projects.map(({ study, shape }) => <Link className="works-card" data-shape={shape} href={`/study/${study.slug}`} key={study.slug} aria-label={`View ${study.product} project`}>
+          <Image src={thumbnail(study)!} alt="" fill sizes="370px" unoptimized />
+        </Link>)}
+      </div> : null}
+      {loop ? <div className="works-viewport" onPointerMove={moveCursor} onPointerLeave={() => { setHovered(null); changeCaption(null); setPointerHover(false); autoPaused.current = false }}>
         <div className="works-track" ref={track} aria-hidden="true">
           {cards.map(({ study, shape }, index) => <button
             className="works-card"
@@ -352,6 +362,7 @@ export function WorksGallery({ studies }: { studies: Study[] }) {
             tabIndex={-1}
             key={`${study.slug}-${index}`}
             onPointerEnter={(event) => { if (event.pointerType === "mouse") { moveCursor(event); setHovered(study); changeCaption(study); setPointerHover(true); autoPaused.current = true } }}
+            onPointerLeave={(event) => { if (event.pointerType === "mouse") { setHovered(null); changeCaption(null); setPointerHover(false); autoPaused.current = false } }}
             onFocus={() => { setHovered(study); changeCaption(study); autoPaused.current = true }}
             onBlur={() => { setHovered(null); changeCaption(null); autoPaused.current = false }}
             onClick={(event) => openProject(study, event.currentTarget)}
@@ -360,7 +371,7 @@ export function WorksGallery({ studies }: { studies: Study[] }) {
             {thumbnail(study) ? <Image src={thumbnail(study)!} alt="" fill sizes="370px" unoptimized /> : null}
           </button>)}
         </div>
-      </div>
+      </div> : null}
       <nav className="works-keyboard-links" aria-label="Selected projects">
         {studies.map((study) => <Link key={study.slug} href={`/study/${study.slug}`}>View {study.product} project</Link>)}
       </nav>

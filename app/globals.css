@@ -1636,5 +1636,7 @@
 /* Text selection uses the soundboard knob orange. */
 ::selection { background: rgb(255 56 0 / .22); color: inherit; }
 
-/* No gray tap flash on touch; every control here has its own :active state. */
-html { -webkit-tap-highlight-color: transparent; }
+/* Keep native text selection for content; controls respond without a tap flash or long-press selection. */
+html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
+button, a, [role="button"] { touch-action: manipulation; }
+button, [role="button"] { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }

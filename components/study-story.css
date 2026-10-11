@@ -29,7 +29,7 @@ html:has(.study-story)::-webkit-scrollbar { display: none; }
 .study-cover-info dl > div { display: flex; gap: 12px; align-items: baseline; }
 .study-cover-info dt { flex: none; }
 .study-cover-info dd { margin: 0; color: #949494; }
-.study-visual { position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 24px; background: #d9d9d9; }
+.study-visual { position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 24px; background: #d9d9d9; outline: 1px solid oklch(0 0 0 / .1); outline-offset: -1px; }
 .study-photo { position: relative; display: flex; width: 100%; height: 100%; overflow: hidden; background: #d9d9d9; }
 .study-photo img { object-fit: cover; }
 .study-photo--pair img { position: relative !important; width: 50% !important; height: 100% !important; object-fit: cover; }
@@ -49,7 +49,7 @@ html:has(.study-story)::-webkit-scrollbar { display: none; }
 .study-detail-action { display: inline-flex; width: fit-content; min-height: 60px; align-items: center; justify-content: center; gap: 10px; margin-top: 12px; padding: 0 18px; border: 0; border-radius: 20px; font-size: 16px; font-weight: 500; line-height: 1.2; text-decoration: none; cursor: pointer; transition: filter 180ms ease, transform 180ms ease; }
 .study-detail-action[data-font="mono"] { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .study-detail-action[data-font="serif"] { font-family: Georgia, Times New Roman, serif; }
-.study-detail-action:active { transform: scale(.97); }
+.study-detail-action:active { transform: scale(.96); }
 .study-detail-action:focus-visible { outline: 2px solid #286995; outline-offset: 3px; }
 .study-scroll-steps { position: relative; z-index: 0; margin-top: -100dvh; pointer-events: none; }
 /* Each slide is 45% of a screen of scrolling (STEP in study-story.tsx); the first spacer holds the cover. */
@@ -124,9 +124,7 @@ html:has(.study-story)::-webkit-scrollbar { display: none; }
 @keyframes study-embed-spin { to { rotate: 360deg; } }
 .study-embed-bar { z-index: 1; }
 @media (prefers-reduced-motion: reduce) { .study-embed[open], .study-embed[open]::backdrop { animation: none; } .study-embed-loading span { animation-duration: 1.6s; } }
-.study-embed { transition: width 420ms cubic-bezier(.22, 1, .36, 1), height 420ms cubic-bezier(.22, 1, .36, 1), border-radius 420ms cubic-bezier(.22, 1, .36, 1); }
 .study-embed[data-expanded="true"] { width: 100vw; height: 100dvh; border-radius: 0; }
-@media (prefers-reduced-motion: reduce) { .study-embed { transition: none; } }
 
 /* Mobile platform layer: hover only where it exists, instant press feedback, no tap flash or label selection. */
 @media (hover: hover) and (pointer: fine) {
@@ -170,7 +168,7 @@ html:has(.study-story)::-webkit-scrollbar { display: none; }
 /* Phone cover per Figma 219:1145: 24px info stack and a 60px link button above the image. Tapping the image opens the story. */
 @media (max-width: 760px) {
   .study-step--cover .study-visual { cursor: pointer; transition: transform 100ms ease-out; -webkit-tap-highlight-color: transparent; }
-  .study-step--cover .study-visual:active { transform: scale(.98); }
+  .study-step--cover .study-visual:active { transform: scale(.96); }
   .study-cover-info dl { font-size: 24px; line-height: normal; }
   .study-cover-external { width: 60px; height: 60px; margin-top: 8px; border-radius: 20px; }
 }
@@ -191,7 +189,7 @@ html:has(.study-story)::-webkit-scrollbar { display: none; }
   .study-card-face, .study-card-back { border-radius: 24px; }
   .study-card-face { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: transform 100ms ease-out; }
   .study-card-face:disabled { cursor: default; }
-  .study-card-face:active:not(:disabled) { transform: scale(.98); }
+  .study-card-face:active:not(:disabled) { transform: scale(.96); }
   .study-card-face:focus-visible { outline: 2px solid #286995; outline-offset: 2px; }
   .study-card .study-visual { aspect-ratio: 1; border-radius: 24px; }
   .study-card-back { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; background: #f4f4f5; opacity: 0; visibility: hidden; transition: opacity 200ms ease-out, visibility 0s linear 200ms; }
@@ -206,6 +204,8 @@ html:has(.study-story)::-webkit-scrollbar { display: none; }
   .study-card-pill--close:focus-visible { outline: 2px solid #286995; outline-offset: 2px; }
   .study-cards-actions { position: fixed; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); left: max(24px, calc(50% - 296px)); z-index: 200; display: flex; gap: 10px; }
   .study-cards-actions a { display: grid; width: 56px; height: 56px; place-items: center; border-radius: 18px; background: #fff; color: #111; text-decoration: none; box-shadow: 0 0 0 1px rgb(0 0 0 / .06), 0 4px 16px rgb(0 0 0 / .12); touch-action: manipulation; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; transition: transform 100ms ease-out; }
+  .study-cards-actions a:first-child { background: #ececef; color: #626168; }
+  .study-cards-actions a:last-child:not(:first-child) { background: #111; color: #fff; }
   .study-cards-actions a:active { transform: scale(.96); }
   .study-cards-actions a:focus-visible { outline: 2px solid #286995; outline-offset: 3px; }
 }

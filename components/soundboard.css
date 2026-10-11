@@ -18,20 +18,34 @@
 .soundboard-speaker, .soundboard-display, .soundboard-loop, .soundboard-pad { min-width: 0; aspect-ratio: 1; border: 0; border-radius: 5px; }
 .soundboard-speaker { display: grid; place-items: center; background: linear-gradient(134deg, #f9f9f9 72.8%, #e2e2e2 100%); }
 .soundboard-grille { display: block; width: 71%; height: 68%; border-radius: 3px; background: repeating-linear-gradient(180deg, #393b3d 0 3px, #f3f3f3 3px 8px); box-shadow: inset 1px 1px 2px #0003, 0 1px 0 #fff; mask-image: radial-gradient(ellipse at center, #000 59%, transparent 76%); }
-.soundboard-display { position: relative; display: flex; flex-direction: column; grid-column: span 2; aspect-ratio: auto; overflow: hidden; border-radius: 4px; background: #08090b; color: #f0f0f0; font-family: Inter, Arial, sans-serif; }
-.soundboard-tape-window { position: relative; flex: 1; min-height: 0; overflow: hidden; background: linear-gradient(135deg, #33353b 0 27%, #090a0d 27% 100%); }
-.soundboard-tape-time { position: absolute; top: 4px; left: 50%; z-index: 2; color: #f0f0f0; font: 400 clamp(10px, 3.4cqw, 15px)/1 Inter, Arial, sans-serif; white-space: nowrap; transform: translateX(-50%); }
-.soundboard-tape-reel { position: absolute; top: 28%; z-index: 1; width: 25%; aspect-ratio: 1; border: 1.5px solid #e1e3e5; border-radius: 50%; background: radial-gradient(circle, #131418 0 6%, #e1e3e5 7% 9%, transparent 10% 17%, #aeb3b9 18% 19%, transparent 20%), conic-gradient(from 15deg, transparent 0 18%, #cbd0d5 19% 20%, transparent 21% 51%, #cbd0d5 52% 53%, transparent 54% 84%, #cbd0d5 85% 86%, transparent 87%); }
-.soundboard-tape-reel-left { left: 16.725%; }.soundboard-tape-reel-right { right: 15.725%; }
-.soundboard-tape-reel i { position: absolute; inset: 34%; border: 1px solid #dce0e4; border-radius: 50%; box-shadow: 0 0 0 2px #dce0e455; }
-.soundboard-tape-level { position: absolute; top: 11%; right: 4%; width: 2px; height: 73%; background: linear-gradient(#9b293e, #e83d60 70%, #5b2230); box-shadow: 0 0 4px #fa426d88; }
+.soundboard-display { position: relative; grid-column: span 2; aspect-ratio: auto; container-type: inline-size; overflow: hidden; border-radius: 4px; background: #000; color: #ededed; font-family: Inter, Arial, sans-serif; }
+.soundboard-tape-lyrics { position: absolute; inset: 0 0 auto; display: flex; height: 22.5%; align-items: center; justify-content: space-between; gap: 4px; padding: 0 2.5%; border-bottom: 1px solid #5a5a5a; color: #ededed; font-size: 5.7cqw; font-weight: 500; line-height: normal; white-space: nowrap; }
+.soundboard-tape-lyric, .soundboard-tape-upcoming { max-width: 48%; overflow: hidden; text-overflow: ellipsis; }
+.soundboard-tape-lyric.is-karaoke { background-clip: text; -webkit-background-clip: text; color: transparent; }
+.soundboard-tape-upcoming { color: #727272; }
+.soundboard-tape-lyric.is-countdown { transform-origin: left center; animation: soundboard-countdown-tick 420ms cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes soundboard-countdown-tick { from { opacity: .35; transform: scale(1.25); } to { opacity: 1; transform: scale(1); } }
+.soundboard-tape-reels { position: absolute; top: 31.25%; left: 15%; width: 70%; height: 42.5%; }
+.soundboard-tape-reel { position: absolute; top: 0; display: grid; width: 30%; aspect-ratio: 1; place-items: center; border: .5px solid #fff; border-radius: 50%; }
+.soundboard-tape-reel::before { position: absolute; top: 5.9%; left: calc(50% - .25px); width: .5px; height: 89.7%; background: url('/images/music-player/reel-left-detail.svg') center / 100% 100% no-repeat; content: ""; }
+.soundboard-tape-reel-left { left: 0; }.soundboard-tape-reel-right { right: 0; }
+.soundboard-tape-reel-right::before { background-image: url('/images/music-player/reel-right-detail.svg'); transform: rotate(45deg); }
+.soundboard-tape-reel i { display: grid; width: 68.1%; aspect-ratio: 1; place-items: center; border-radius: 50%; background: #fff; }
+.soundboard-tape-reel i::after { width: 53.2%; aspect-ratio: 1; background: url('/images/music-player/reel-center.svg') center / contain no-repeat; content: ""; }
+.soundboard-tape-time { position: absolute; top: 50%; left: 50%; color: #ededed; font-size: 5cqw; font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; transform: translate(-50%, -50%); }
 .soundboard-display.is-playing .soundboard-tape-reel { animation: soundboard-reel-spin 3s linear infinite; }
-.soundboard-tape-lyrics { position: relative; display: flex; flex: 0 0 22%; align-items: center; justify-content: space-between; gap: 8px; min-height: 0; overflow: hidden; padding: 0 7px; border-top: 1px solid #62676d; background: #08090b; white-space: nowrap; }
-.soundboard-tape-lyric { min-width: 0; overflow: hidden; flex: 1; background-clip: text; -webkit-background-clip: text; color: transparent; font-size: clamp(9px, 3.1cqw, 13px); font-weight: 700; text-overflow: ellipsis; }
-.soundboard-tape-lyric.is-countdown { font-size: clamp(12px, 3.6cqw, 16px); transform-origin: left center; animation: soundboard-countdown-tick 420ms cubic-bezier(.2, .8, .2, 1) both; }
-@keyframes soundboard-countdown-tick { from { opacity: .35; transform: scale(1.35); } to { opacity: 1; transform: scale(1); } }
-.soundboard-tape-upcoming { max-width: 43%; overflow: hidden; color: #b6bec6; font-size: clamp(8px, 2.3cqw, 10px); font-weight: 700; text-align: right; text-overflow: ellipsis; }
 @keyframes soundboard-reel-spin { to { transform: rotate(360deg); } }
+.soundboard-tape-track { position: absolute; top: 82.5%; left: 5.56%; width: 88.9%; height: 10%; pointer-events: none; }
+.soundboard-tape-ticks { position: absolute; inset: 0; display: flex; justify-content: space-between; }
+.soundboard-tape-ticks i { width: 1.5px; height: 100%; background: #ededed; }
+.soundboard-tape-progress { position: absolute; top: 50%; left: 0; z-index: 1; height: 2px; background: #e54527; transform: translateY(-50%); }
+.soundboard-tape-progress::after { position: absolute; top: 50%; right: -5px; width: 10px; height: 10px; border-radius: 50%; background: #e54527; content: ""; transform: translateY(-50%); }
+.soundboard-tape-scrubber { position: absolute; top: 78%; left: 5.56%; width: 88.9%; height: 20%; margin: 0; appearance: none; background: transparent; cursor: pointer; touch-action: none; }
+.soundboard-tape-scrubber::-webkit-slider-runnable-track { height: 100%; background: transparent; }
+.soundboard-tape-scrubber::-moz-range-track { height: 100%; background: transparent; }
+.soundboard-tape-scrubber::-webkit-slider-thumb { width: 8px; height: 8px; margin-top: 2px; border: 1px solid #fff; border-radius: 50%; appearance: none; background: #e54527; opacity: 0; }
+.soundboard-tape-scrubber::-moz-range-thumb { width: 6px; height: 6px; border: 1px solid #fff; border-radius: 50%; background: #e54527; opacity: 0; }
+.soundboard-tape-scrubber:focus-visible { outline: 1px solid #fff; outline-offset: -1px; }
 @media (prefers-reduced-motion: reduce) { .soundboard-display.is-playing .soundboard-tape-reel, .soundboard-tape-lyric.is-countdown { animation: none; } }
 .soundboard-loop { position: relative; display: grid; place-items: center; padding: 0; overflow: hidden; background: #f9f9f9; cursor: pointer; touch-action: manipulation; }
 .soundboard-loop-cap { position: relative; display: block; width: 72%; aspect-ratio: 1; border: 1px solid #e93000; border-radius: 50%; background: #ff3800; box-shadow: inset 0 1px 1px #ffffff99, 1px 2px 2px #9f5544, 3px 5px 4px #6b2c229c, -3px -3px 5px #fff; transition: transform 130ms ease-out, box-shadow 130ms ease-out; }

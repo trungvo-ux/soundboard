@@ -4,16 +4,33 @@ import dynamic from "next/dynamic"
 import { PortfolioNav } from "@/components/portfolio-nav"
 import "@/components/home-experience.css"
 
-const HangingPhoto = dynamic(() => import("@/components/hanging-photo").then((module) => module.HangingPhoto), { ssr: false })
+const AboutMii = dynamic(() => import("@/components/about-mii").then((module) => module.AboutMii), { ssr: false })
 
 export default function About() {
   return <div className="home-page">
     <PortfolioNav active="about" />
     <main id="main-content" tabIndex={-1} className="home-secondary home-about">
       <h1 className="sr-only">About Trung Vo</h1>
-      <HangingPhoto />
-      <p>I&rsquo;m interested in doing micro-interactions &amp; animations.</p>
-      <p>I design systems for complex data work, currently at IBM on watsonx.data, focusing on how teams query, visualize, and act on data at scale. I&rsquo;m curious about how AI can enhance humanity and how to implement safeguards for it.</p>
+      <div className="about-mii-slot"><AboutMii /></div>
+      <div className="home-about-copy">
+        <section>
+          <h2>About me</h2>
+          <p>I&rsquo;m a product designer in San Jose, CA. For the past two years, design has been both my work and my favorite creative outlet.</p>
+          <p>At IBM, I design systems for watsonx.data that help teams query, visualize, and act on complex data.</p>
+        </section>
+        <section>
+          <h2>What&rsquo;s your niche?</h2>
+          <p>I love crafting micro-interactions that make products feel intuitive.</p>
+        </section>
+        <section>
+          <h2>Experience</h2>
+          <p>Previously at Zeme, Snap Inc., Amazon Music, and PillarBiome.</p>
+        </section>
+        <section>
+          <h2>Opportunities</h2>
+          <p>I&rsquo;m open to contract and full-time roles. Get in touch <a href="/email">here</a>.</p>
+        </section>
+      </div>
     </main>
   </div>
 }
