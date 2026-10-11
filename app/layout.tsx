@@ -30,6 +30,9 @@ const siteUrl =
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : "http://localhost:3000")
 
+// Bump when replacing favicon assets so browsers drop a cached rabbit/blank tab icon.
+const iconVersion = "20261011b"
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: siteTitle,
@@ -37,6 +40,15 @@ export const metadata: Metadata = {
   // Opt out of AI training where tools honour it (noai/noimageai), and state ownership.
   robots: { index: true, follow: true, "max-image-preview": "large" },
   other: { robots: "noai, noimageai", copyright: `© ${new Date().getFullYear()} Trung Vo. All rights reserved.` },
+  // Explicit icons with a version query — file-based app/icon.png + app/favicon.ico
+  // still ship via the App Router; this forces tab caches past the old rabbit mark.
+  icons: {
+    icon: [
+      { url: `/favicon.ico?v=${iconVersion}`, sizes: "any" },
+      { url: `/icon.png?v=${iconVersion}`, type: "image/png", sizes: "64x64" },
+    ],
+    apple: [{ url: `/apple-icon.png?v=${iconVersion}`, sizes: "180x180", type: "image/png" }],
+  },
   openGraph: {
     title: siteTitle,
     description: siteDescription,
