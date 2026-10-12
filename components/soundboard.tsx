@@ -148,9 +148,9 @@ export function Soundboard({ enabled = true }: { enabled?: boolean }) {
   const seconds = Math.floor(tapeTime % 60)
   const centiseconds = Math.floor((tapeTime % 1) * 100)
   const timecode = `${minutes}:${String(seconds).padStart(2, "0")}:${String(centiseconds).padStart(2, "0")}`
-  // This instrumental edit reaches each matching song section about 5.5s earlier
+  // This instrumental edit reaches each matching song section about 5.6s earlier
   // than the vocal recording used for the timestamped lyric source.
-  const lyricTime = tapeTime + 5.5
+  const lyricTime = tapeTime + 5.6
   const lyricCue = lyricCues.find(([start, end]) => lyricTime >= start && lyricTime < end)
   const lyric = lyricCue ? pads[lyricCue[2]].label : ""
   const secondsToFirstLyric = lyricCues[0][0] - lyricTime
