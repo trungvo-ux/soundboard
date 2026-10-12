@@ -185,7 +185,7 @@ html:has(.study-story)::-webkit-scrollbar { display: none; }
   .study-cards-head dd { margin: 0; color: #949494; }
   /* Front is the image + "Read more" pill; the story fades in over it on tap (no flip). */
   .study-card { position: relative; z-index: calc(100 - var(--card-index, 0)); }
-  .study-card-inner { position: relative; }
+  .study-card-inner { position: relative; overflow: hidden; border-radius: 24px; }
   .study-card-face, .study-card-back { border-radius: 24px; }
   .study-card-face { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: transform 100ms ease-out; }
   .study-card-face:disabled { cursor: default; }
@@ -194,7 +194,8 @@ html:has(.study-story)::-webkit-scrollbar { display: none; }
   .study-card .study-visual { aspect-ratio: 1; border-radius: 24px; }
   .study-card-back { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; background: #f4f4f5; opacity: 0; visibility: hidden; transition: opacity 200ms ease-out, visibility 0s linear 200ms; }
   .study-card[data-open="true"] .study-card-back { opacity: 1; visibility: visible; transition: opacity 200ms ease-out, visibility 0s; }
-  .study-card-back-copy { flex: 1; display: grid; align-content: start; gap: 16px; overflow-y: auto; overscroll-behavior: contain; padding: 24px 24px 8px; font-weight: 500; }
+  .study-card-back-copy { flex: 1; display: grid; align-content: start; gap: 16px; overflow-y: auto; overscroll-behavior: contain; padding: 24px 24px 8px; scrollbar-width: none; font-weight: 500; }
+  .study-card-back-copy::-webkit-scrollbar { display: none; }
   .study-card-back .study-copy-block { gap: 6px; font-size: 16px; line-height: 1.35; }
   .study-card-back h2 { color: #111; }
   .study-card-back p { color: #626168; }

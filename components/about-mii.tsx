@@ -134,6 +134,7 @@ export function AboutMii() {
   const [expanded, setExpanded] = useState(false)
   const [revealed, setRevealed] = useState(false)
   const [showWire, setShowWire] = useState(true)
+  const [timedOut, setTimedOut] = useState(false)
   const markWireReady = useCallback(() => setWireReady(true), [])
   const markColorReady = useCallback(() => setColorReady(true), [])
 
@@ -152,6 +153,13 @@ export function AboutMii() {
     const timer = window.setTimeout(() => setShowWire(false), 550)
     return () => window.clearTimeout(timer)
   }, [revealed])
+  useEffect(() => {
+    if (revealed) return
+    const timer = window.setTimeout(() => setTimedOut(true), 8000)
+    return () => window.clearTimeout(timer)
+  }, [revealed])
+
+  if (timedOut) return <div className="about-signature" role="img" aria-label="Trung Vo's signature" />
 
   return <div className="about-mii" role="img" aria-label="3D model of Trung's Mii character" style={{ position: "relative" }}>
     {showWire && <div style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: revealed ? 0 : 1, transition: `opacity ${revealed ? 550 : 0}ms ease-in-out` }}>

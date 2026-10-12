@@ -4,8 +4,9 @@
 .portfolio-nav a:focus-visible { outline: 2px solid #626168; outline-offset: 4px; }
 @media (hover: hover) and (pointer: fine) { .portfolio-nav a:hover { color: #111; } }
 @media (max-width: 700px) {
-  .portfolio-nav { top: calc(12px + env(safe-area-inset-top, 0px)); right: calc(12px + env(safe-area-inset-right, 0px)); gap: 0; font-size: 16px; }
-  .portfolio-nav a { display: flex; min-height: 44px; align-items: center; justify-content: flex-end; padding-inline: 8px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+  .portfolio-nav { top: calc(12px + env(safe-area-inset-top, 0px)); right: 0; left: 0; flex-direction: row; align-items: center; justify-content: safe center; gap: 8px; overflow-x: auto; overflow-y: hidden; padding-inline: calc(12px + env(safe-area-inset-left, 0px)) calc(12px + env(safe-area-inset-right, 0px)); white-space: nowrap; scrollbar-width: none; font-size: 16px; }
+  .portfolio-nav::-webkit-scrollbar { display: none; }
+  .portfolio-nav a { display: flex; min-height: 32px; flex-shrink: 0; align-items: center; justify-content: flex-start; padding-inline: 8px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
   .portfolio-nav a:active { color: #111; transform: scale(.96); }
 }
 @media (prefers-reduced-motion: reduce) { .portfolio-nav a { transition: none; } }

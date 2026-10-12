@@ -61,7 +61,7 @@
 .home-hero .soundboard-wrap { width: 100%; }
 .home-hero-copy { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; font-size: 24px; font-weight: 500; line-height: 1.2; letter-spacing: 0.01em; }
 .home-hero-copy h1 { margin: 0; font: inherit; text-wrap: balance; }
-.home-last-seen { margin: 0; color: #8b8b8b; font-size: 15px; font-weight: 400; line-height: 1.35; letter-spacing: 0; }
+.home-last-seen { margin: 0; color: #8b8b8b; font-size: 24px; font-weight: 400; line-height: 1.35; letter-spacing: 0; }
 .home-last-seen time { display: inline-block; min-width: 14ch; text-align: left; }
 .home-hero-copy a { color: inherit; text-decoration: none; text-underline-offset: 3px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: color 150ms ease-out; }
 .home-hero-copy a:focus-visible { color: #111; text-decoration: underline; }
@@ -93,6 +93,7 @@
 .home-about-copy a { color: #111; text-decoration: underline; text-underline-offset: 2px; }
 .about-mii-slot { width: min(100%, 480px); height: clamp(260px, 38vh, 420px); flex: 0 0 auto; align-self: center; }
 .about-mii { width: 100%; height: 100%; touch-action: pan-y; }
+.about-signature { width: min(70%, 240px); height: 100%; margin-inline: auto; background: center / contain no-repeat url('/images/trung-signature.png'); }
 .home-about:has(.home-about-copy) .about-mii-slot { height: clamp(150px, 32vh, 280px); }
 .hanging-photo { position: fixed; inset: 0; width: 100vw; height: 100dvh; z-index: 0; cursor: grab; touch-action: none; }
 .hanging-photo:active { cursor: grabbing; }
@@ -108,21 +109,18 @@
   .home-soundboard-reveal { width: min(100%, max(280px, calc((100svh - 320px) * .81))); }
   .home-hero-copy { width: 100%; gap: 6px; font-size: clamp(17px, 4.3vw, 21px); line-height: 1.25; }
   .home-social-links { font-size: 15px; }
-  /* Headline moves to the top-left, level with the nav, where it reads first. */
-  .home-hero-copy h1 { position: absolute; top: calc(18px + env(safe-area-inset-top, 0px)); left: calc(16px + env(safe-area-inset-left, 0px)); max-width: calc(100% - 140px); text-align: left; font-size: 22px; line-height: 1.25; }
-  .home-last-seen { font-size: 14px; }
+  .home-hero-copy h1 { font-size: 22px; line-height: 1.25; }
+  .home-last-seen { font-size: 22px; }
   .home-secondary { min-height: calc(100dvh - 58px); padding-top: 64px; }
   .home-about { padding-top: min(68vh, 620px); }
   .home-about:has(.about-mii-slot) { padding-top: 90px; }
   .home-about:has(.home-about-copy) { padding-top: 64px; padding-bottom: 12px; }
   .home-about:has(.home-about-copy) .about-mii-slot { height: clamp(120px, 24vh, 190px); }
+  .about-mii canvas { transform: scale(1.15); }
 }
 @media (max-width: 760px) and (max-height: 700px) {
   .home-about:has(.home-about-copy) { padding-top: 52px; }
   .home-about:has(.home-about-copy) .about-mii-slot { height: 22vh; }
-}
-@media (max-width: 480px) {
-  .home-last-seen { position: absolute; top: calc(110px + env(safe-area-inset-top, 0px)); left: calc(16px + env(safe-area-inset-left, 0px)); max-width: calc(100% - 140px); text-align: left; }
 }
 /* The inline IBM link is only ~26px tall; pad its hit area to 44px without moving the text. */
 .home-hero-copy h1 a { display: inline-block; padding-block: 9px; margin-block: -9px; }
