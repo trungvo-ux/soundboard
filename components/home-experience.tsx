@@ -32,7 +32,8 @@ function timeSinceLastSeen(now: number) {
 export function HomeExperience() {
   const [shown, setShown] = useState(false)
   const [boardRevealed, setBoardRevealed] = useState(false)
-  const [now, setNow] = useState(() => Date.now())
+  // null until mount so SSR/prerender never bakes a stale relative string into HTML
+  const [now, setNow] = useState<number | null>(null)
   useEffect(() => {
     const frame = requestAnimationFrame(() => setShown(true))
     return () => cancelAnimationFrame(frame)
@@ -49,9 +50,16 @@ export function HomeExperience() {
 
   useEffect(() => {
     const update = () => setNow(Date.now())
+    update()
+    const timer = window.setInterval(update, 30_000)
+    const onFocus = () => update()
     document.addEventListener("visibilitychange", update)
-    const timer = window.setInterval(update, 60_000)
-    return () => { document.removeEventListener("visibilitychange", update); window.clearInterval(timer) }
+    window.addEventListener("focus", onFocus)
+    return () => {
+      window.clearInterval(timer)
+      document.removeEventListener("visibilitychange", update)
+      window.removeEventListener("focus", onFocus)
+    }
   }, [])
 
   return (
@@ -73,7 +81,7 @@ export function HomeExperience() {
           </div>
           <div className={`home-hero-copy t-stagger ${shown ? "is-shown" : ""}`}>
             <h1 className="t-stagger-line t-stagger-line--1">Trung is a Product Designer at <a href="https://www.ibm.com/" target="_blank" rel="noopener noreferrer">IBM</a></h1>
-            <p className="home-last-seen t-stagger-line t-stagger-line--2">Last seen <time dateTime={lastSeen.at} suppressHydrationWarning>{timeSinceLastSeen(now)}</time> {lastSeen.activity} in {lastSeen.city}</p>
+            <p className="home-last-seen t-stagger-line t-stagger-line--2">Last seen <time dateTime={lastSeen.at}>{now != null ? timeSinceLastSeen(now) : "\u00a0"}</time> {lastSeen.activity} in {lastSeen.city}</p>
             <nav className="home-social-links t-stagger-line t-stagger-line--3" aria-label="Social links">
               <a href="https://www.linkedin.com/in/trung--vo" target="_blank" rel="noopener noreferrer">LinkedIn</a>
               <span className="home-social-dot" aria-hidden="true" />
