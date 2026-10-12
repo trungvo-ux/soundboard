@@ -81,7 +81,13 @@ export function HomeExperience() {
           </div>
           <div className={`home-hero-copy t-stagger ${shown ? "is-shown" : ""}`}>
             <h1 className="t-stagger-line t-stagger-line--1">Trung is a Product Designer at <a href="https://www.ibm.com/" target="_blank" rel="noopener noreferrer">IBM</a></h1>
-            <p className="home-last-seen t-stagger-line t-stagger-line--2">Last seen <time dateTime={lastSeen.at}>{now != null ? timeSinceLastSeen(now) : "\u00a0"}</time> {lastSeen.activity} in {lastSeen.city}</p>
+            <p className="home-last-seen t-stagger-line t-stagger-line--2" data-ready={now != null ? "true" : "false"}>
+              {now != null ? (
+                <>Last seen <time dateTime={lastSeen.at}>{timeSinceLastSeen(now)}</time> {lastSeen.activity} in {lastSeen.city}</>
+              ) : (
+                <time dateTime={lastSeen.at} />
+              )}
+            </p>
             <nav className="home-social-links t-stagger-line t-stagger-line--3" aria-label="Social links">
               <a href="https://www.linkedin.com/in/trung--vo" target="_blank" rel="noopener noreferrer">LinkedIn</a>
               <span className="home-social-dot" aria-hidden="true" />
