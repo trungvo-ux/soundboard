@@ -9,14 +9,15 @@ import "./home-experience.css"
 // Update these when the status changes; elapsed time keeps running across visits.
 const lastSeen = {
   city: "San Jose",
-  activity: "at a shooting range",
-  at: "2026-10-11T19:30:40Z",
+  activity: "updating my portfolio",
+  at: "2026-10-12T03:21:30Z",
 }
 
 function timeSinceLastSeen(now: number) {
   const minutes = Math.max(0, (now - Date.parse(lastSeen.at)) / 60_000)
+  if (minutes < 1) return "just now"
   if (minutes < 60) {
-    const wholeMinutes = Math.max(1, Math.floor(minutes))
+    const wholeMinutes = Math.floor(minutes)
     return `${wholeMinutes} ${wholeMinutes === 1 ? "minute" : "minutes"} ago`
   }
   const hours = minutes / 60
