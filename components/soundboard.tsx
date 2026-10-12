@@ -130,9 +130,18 @@ export function Soundboard({ enabled = true }: { enabled?: boolean }) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return
-      // Shortcuts belong to the page, not to a focused control. In particular,
-      // Space must keep its native behavior on buttons and switches.
-      if (event.target instanceof HTMLElement && event.target.closest("a, button, input, textarea, select, [contenteditable], [role='button'], [role='link'], [role='switch']")) return
+      const target = event.target
+      if (target instanceof HTMLElement) {
+        // Never steal typing from form fields or editable content.
+        if (target.closest("input, textarea, select, [contenteditable]:not([contenteditable='false'])")) return
+        // Space/Enter must activate the focused control (pad, switch, link).
+        // Letter/number pad hotkeys must still work after a mouse click leaves
+        // focus on a button — that was swallowing every shortcut.
+        if (
+          (event.key === " " || event.key === "Enter") &&
+          target.closest("a, button, [role='button'], [role='link'], [role='switch']")
+        ) return
+      }
       const index = keys.indexOf(event.key.toLowerCase())
       if (index < 0) return
       event.preventDefault()
