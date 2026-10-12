@@ -130,9 +130,12 @@ export function Soundboard({ enabled = true }: { enabled?: boolean }) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return
-      // Shortcuts belong to the page, not to a focused control. In particular,
-      // Space must keep its native behavior on buttons and switches.
-      if (event.target instanceof HTMLElement && event.target.closest("a, button, input, textarea, select, [contenteditable], [role='button'], [role='link'], [role='switch']")) return
+      // Soundboard buttons keep focus after a click; letter shortcuts should still work there.
+      // Space keeps its native button behavior so a focused button activates only once.
+      const control = event.target instanceof HTMLElement
+        ? event.target.closest("a, button, input, textarea, select, [contenteditable], [role='button'], [role='link'], [role='switch']")
+        : null
+      if (control && (event.key === " " || !(control instanceof HTMLButtonElement && control.closest("[data-soundboard]")))) return
       const index = keys.indexOf(event.key.toLowerCase())
       if (index < 0) return
       event.preventDefault()
@@ -202,7 +205,7 @@ export function Soundboard({ enabled = true }: { enabled?: boolean }) {
             </div>
             <input className="soundboard-tape-scrubber" type="range" min="0" max={tapeDuration} step="0.1" value={tapeTime} onChange={(event) => seek(Number(event.target.value))} aria-label="Scrub instrumental" aria-valuetext={timecode} />
           </div>
-          <button type="button" role="switch" className="soundboard-loop" disabled={!ready || !enabled} aria-label="Music, keyboard Space" aria-checked={looping} onPointerDown={() => play(16)} onClick={(event) => { if (event.detail === 0) play(16) }}>
+          <button type="button" role="switch" className="soundboard-loop" disabled={!ready || !enabled} aria-label="Music, keyboard Space" aria-checked={looping} onPointerDown={() => play(16)} onPointerUp={(event) => event.currentTarget.blur()} onClick={(event) => { if (event.detail === 0) play(16) }}>
             <span className="soundboard-loop-cap" aria-hidden="true"><span className="soundboard-loop-led" /></span>
           </button>
           {pads.map((pad, index) => (
@@ -213,6 +216,7 @@ export function Soundboard({ enabled = true }: { enabled?: boolean }) {
               className={`soundboard-pad soundboard-pad-${["green", "blue", "orange", "gray"][Math.floor(index / 4)]} ${lit.includes(index) ? "is-lit" : ""}`}
               aria-label={`${pad.label}, keyboard ${keys[index].toUpperCase()}`}
               onPointerDown={(event) => { if (event.pointerType === "mouse" && !guideDismissed.current && window.matchMedia("(min-width: 1200px)").matches) setShowKeyboardTip(true); play(index) }}
+              onPointerUp={(event) => event.currentTarget.blur()}
               onClick={(event) => { if (event.detail === 0) play(index) }}
             >
               <span className="soundboard-key-halo"><span className="soundboard-key"><span className="soundboard-key-number">{keys[index].toUpperCase()}</span><span className="soundboard-key-name">{pad.label}</span></span></span>
