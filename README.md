@@ -63,13 +63,15 @@ const lastSeen = {
 }
 ```
 
+Renders as `Last seen {activity} in {city}, {time}` (e.g. `Last seen landing in Las Vegas, just now`).
+
 | Field | Meaning |
 | --- | --- |
-| `city` | City shown at the end of the line |
-| `activity` | What you were doing (e.g. `at a shooting range`) |
+| `city` | City shown after the activity |
+| `activity` | What you were doing (e.g. `landing`, `at a shooting range`) |
 | `at` | ISO 8601 timestamp of when you were last seen |
 
-The relative label updates on the client (and refreshes periodically / on focus):
+The relative `{time}` label updates on the client (and refreshes periodically / on focus):
 
 | Elapsed | Label |
 | --- | --- |

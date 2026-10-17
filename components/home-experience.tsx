@@ -84,7 +84,7 @@ export function HomeExperience() {
             <h1 className="t-stagger-line t-stagger-line--1">Trung is a Product Designer at <a href="https://www.ibm.com/" target="_blank" rel="noopener noreferrer">IBM</a></h1>
             <p className="home-last-seen t-stagger-line t-stagger-line--2" data-ready={now != null ? "true" : "false"}>
               {now != null ? (
-                <>Last seen <time dateTime={lastSeen.at}>{timeSinceLastSeen(now)}</time> {lastSeen.activity} in {lastSeen.city}</>
+                <>Last seen {lastSeen.activity} in {lastSeen.city}, <time dateTime={lastSeen.at}>{timeSinceLastSeen(now)}</time></>
               ) : (
                 <time dateTime={lastSeen.at} />
               )}
