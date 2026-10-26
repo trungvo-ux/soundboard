@@ -8,9 +8,9 @@ import "./home-experience.css"
 
 // Update these when the status changes; elapsed time keeps running across visits.
 const lastSeen = {
-  city: "Las Vegas",
-  activity: "landing",
-  at: "2026-10-17T03:07:50Z",
+  city: "San Jose",
+  activity: "eating Jake's pizza",
+  at: "2026-10-26T03:10:04Z",
 }
 
 function timeSinceLastSeen(now: number) {
