@@ -10,7 +10,7 @@ import "./home-experience.css"
 // Omit `city` when the activity already names the place (e.g. "going to Kyoto").
 const lastSeen: { activity: string; city?: string; at: string } = {
   activity: "going to Kyoto",
-  P26-11-07T04:23:45Z",
+  at: "2026-11-07T04:24:08Z",
 }
 
 function timeSinceLastSeen(now: number) {
