@@ -7,10 +7,10 @@ import { PortfolioNav } from "@/components/portfolio-nav"
 import "./home-experience.css"
 
 // Update these when the status changes; elapsed time keeps running across visits.
-const lastSeen = {
-  city: "San Jose",
-  activity: "eating Jake's pizza",
-  at: "2026-10-26T03:10:04Z",
+// Omit `city` when the activity already names the place (e.g. "going to Kyoto").
+const lastSeen: { activity: string; city?: string; at: string } = {
+  activity: "going to Kyoto",
+  P26-11-07T04:23:45Z",
 }
 
 function timeSinceLastSeen(now: number) {
@@ -84,7 +84,7 @@ export function HomeExperience() {
             <h1 className="t-stagger-line t-stagger-line--1">Trung is a Product Designer at <a href="https://www.ibm.com/" target="_blank" rel="noopener noreferrer">IBM</a></h1>
             <p className="home-last-seen t-stagger-line t-stagger-line--2" data-ready={now != null ? "true" : "false"}>
               {now != null ? (
-                <>Last seen {lastSeen.activity} in {lastSeen.city}, <time dateTime={lastSeen.at}>{timeSinceLastSeen(now)}</time></>
+                <>Last seen {lastSeen.activity}{lastSeen.city ? <> in {lastSeen.city}</> : null}, <time dateTime={lastSeen.at}>{timeSinceLastSeen(now)}</time></>
               ) : (
                 <time dateTime={lastSeen.at} />
               )}

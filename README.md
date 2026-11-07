@@ -63,12 +63,12 @@ const lastSeen = {
 }
 ```
 
-Renders as `Last seen {activity} in {city}, {time}` (e.g. `Last seen landing in Las Vegas, just now`).
+Renders as `Last seen {activity} in {city}, {time}` when `city` is set (e.g. `Last seen landing in Las Vegas, just now`), or `Last seen {activity}, {time}` when `city` is omitted (e.g. `Last seen going to Kyoto, just now`).
 
 | Field | Meaning |
 | --- | --- |
-| `city` | City shown after the activity |
-| `activity` | What you were doing (e.g. `landing`, `at a shooting range`) |
+| `city` | Optional. When set, shown after the activity as ` in {city}` |
+| `activity` | What you were doing (e.g. `landing`, `going to Kyoto`) |
 | `at` | ISO 8601 timestamp of when you were last seen |
 
 The relative `{time}` label updates on the client (and refreshes periodically / on focus):
